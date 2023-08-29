@@ -1,0 +1,38 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <file>"
+    exit 1
+fi
+
+filename="$1"
+
+python3 << END
+import sys
+import math
+
+def factorize(n):
+    for i in range(2, math.isqrt(n) + 1):
+        if n % i == 0:
+            return i, n // i
+    return None, None
+
+filename = "$filename"
+
+try:
+    with open(filename, 'r') as file:
+        lines = file.readlines()
+except FileNotFoundError:
+    print("File not found:", filename)
+    sys.exit(1)
+
+for line in lines:
+    n = int(line.strip())
+    if n <= 1:
+        continue
+
+    p, q = factorize(n)
+    if p is not None and q is not None:
+        print(f"{n}={p}*{q}")
+END
+
